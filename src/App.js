@@ -6,6 +6,7 @@ import fetchJsonp from "fetch-jsonp";
 import { Header, HeaderTitle } from "./ui/Header";
 import { ErrorMsg } from "./ui/Error";
 import formatId from "./helpers/formatid.js";
+import { LoaderWrapper } from "./ui/LoaderWrapper";
 
 class App extends Component {
   state = {
@@ -32,12 +33,10 @@ class App extends Component {
       .then(function(json) {
         console.log(json);
         console.log(json.items);
-        setTimeout(function() {
-          self.setState({
-            items: json.items,
-            loading: false
-          });
-        }, 600);
+        self.setState({
+          items: json.items,
+          loading: false
+        });
       })
       .catch(function(ex) {
         console.log("parsing failed", ex);
@@ -96,7 +95,9 @@ class App extends Component {
           <HeaderTitle>Sainsbury's</HeaderTitle>
         </Header>
         {this.state.loading && (
-          <Loader type="Grid" color="#f90" height="40" width="auto" />
+          <LoaderWrapper>
+            <Loader type="TailSpin" color="#f90" height="40" width="40" />
+          </LoaderWrapper>
         )}
         {this.state.error && (
           <ErrorMsg>Flickr Feed error. Please reload the page.</ErrorMsg>
