@@ -1,20 +1,27 @@
 import React, { Component } from "react";
+import Loader from "react-loader-spinner";
 
 import { GridContainer, GridItem } from "./ui/Grid";
 import fetchJsonp from "fetch-jsonp";
 import { Header, HeaderTitle } from "./ui/Header";
+import { ErrorMsg } from "./ui/Error";
 import formatId from "./helpers/formatid.js";
 
 class App extends Component {
   state = {
     items: "",
-    selectedItems: []
+    selectedItems: [],
+    loading: true,
+    error: false
   };
 
   componentDidMount() {
     const self = this;
+
+    this.getSessionStorage();
+
     fetchJsonp(
-      "//api.flickr.com/services/feeds/photos_public.gne?format=json",
+      "https://api.flickr.com/services/feeds/photos_public.gne?tags=sainsburys&tagmode=all&format=json",
       {
         jsonpCallbackFunction: "jsonFlickrFeed"
       }
@@ -25,27 +32,62 @@ class App extends Component {
       .then(function(json) {
         console.log(json);
         console.log(json.items);
-        self.setState({
-          items: json.items
-        });
+        setTimeout(function() {
+          self.setState({
+            items: json.items,
+            loading: false
+          });
+        }, 600);
       })
       .catch(function(ex) {
         console.log("parsing failed", ex);
+        self.setState({
+          loading: false,
+          error: true
+        });
       });
   }
+
+  componentDidUpdate() {
+    if (sessionStorage["selectedItems"] !== undefined) {
+      sessionStorage.setItem("selectedItems", this.state.selectedItems);
+    }
+  }
+
+  getSessionStorage() {
+    if (sessionStorage["selectedItems"] !== undefined) {
+      const itemsStored = sessionStorage.getItem("selectedItems").split(",");
+      this.setState({
+        selectedItems: [...itemsStored]
+      });
+    }
+  }
+
   selectItem(item) {
-    formatId(item);
-    this.setState({
-      selectedItems: [...this.state.selectedItems, formatId(item)]
-    });
+    item = formatId(item);
+    const result = this.state.selectedItems.find(
+      selectedItem => selectedItem === item
+    );
+    if (result) {
+      const newSelectedItems = this.state.selectedItems.filter(
+        selectedItem => selectedItem !== item
+      );
+      this.setState({
+        selectedItems: [...newSelectedItems]
+      });
+    } else {
+      this.setState({
+        selectedItems: [...this.state.selectedItems, item]
+      });
+    }
   }
   isSelected(item) {
     item = formatId(item);
     const result = this.state.selectedItems.find(
       selectedItem => selectedItem === item
     );
-    console.log("isSelected: ", result);
-    console.log("isSelected2: ", result ? true : false);
+    // console.log("isSelected: ", result);
+    // console.log("isSelected2: ", result ? true : false);
     return result ? true : false;
   }
   render() {
@@ -55,6 +97,12 @@ class App extends Component {
         <Header>
           <HeaderTitle>Sainsbury's</HeaderTitle>
         </Header>
+        {this.state.loading && (
+          <Loader type="Grid" color="#f90" height="40" width="auto" />
+        )}
+        {this.state.error && (
+          <ErrorMsg>Flickr Feed error. Please reload the page.</ErrorMsg>
+        )}
         <GridContainer>
           {items &&
             items.map((item, i) => {
