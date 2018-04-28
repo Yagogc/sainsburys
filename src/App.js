@@ -49,11 +49,7 @@ class App extends Component {
   }
 
   componentDidUpdate() {
-    console.log("didUpdate");
-    if (sessionStorage["selectedItems"] !== undefined) {
-      console.log("didUpdate", this.state.selectedItems);
-      sessionStorage.setItem("selectedItems", this.state.selectedItems);
-    }
+    sessionStorage.setItem("selectedItems", this.state.selectedItems);
   }
 
   getSessionStorage() {
