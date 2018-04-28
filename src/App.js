@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
-import "./App.css";
+
 import fetchJsonp from "fetch-jsonp";
+import { Header, HeaderTitle } from "./ui/Header";
 
 class App extends Component {
   state = {
@@ -19,6 +19,7 @@ class App extends Component {
         return response.json();
       })
       .then(function(json) {
+        console.log(json);
         console.log(json.items);
         self.setState({
           items: json.items
@@ -29,15 +30,19 @@ class App extends Component {
       });
   }
   render() {
+    const { items } = this.state;
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Sainsbury</h1>
-        </header>
-        <main className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
+      <React.Fragment>
+        <Header>
+          <HeaderTitle>Sainsbury's</HeaderTitle>
+        </Header>
+        <main>
+          {items &&
+            items.map(item => {
+              return <img src={item.media.m} alt={item.title} />;
+            })}
         </main>
-      </div>
+      </React.Fragment>
     );
   }
 }
