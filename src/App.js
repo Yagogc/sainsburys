@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 
+import { GridContainer, GridItem } from "./ui/Grid";
 import fetchJsonp from "fetch-jsonp";
 import { Header, HeaderTitle } from "./ui/Header";
+import formatId from "./helpers/formatid.js";
 
 class App extends Component {
   state = {
-    items: ""
+    items: "",
+    selectedItems: []
   };
+
   componentDidMount() {
     const self = this;
     fetchJsonp(
@@ -29,6 +33,21 @@ class App extends Component {
         console.log("parsing failed", ex);
       });
   }
+  selectItem(item) {
+    formatId(item);
+    this.setState({
+      selectedItems: [...this.state.selectedItems, formatId(item)]
+    });
+  }
+  isSelected(item) {
+    item = formatId(item);
+    const result = this.state.selectedItems.find(
+      selectedItem => selectedItem === item
+    );
+    console.log("isSelected: ", result);
+    console.log("isSelected2: ", result ? true : false);
+    return result ? true : false;
+  }
   render() {
     const { items } = this.state;
     return (
@@ -36,12 +55,20 @@ class App extends Component {
         <Header>
           <HeaderTitle>Sainsbury's</HeaderTitle>
         </Header>
-        <main>
+        <GridContainer>
           {items &&
-            items.map(item => {
-              return <img src={item.media.m} alt={item.title} />;
+            items.map((item, i) => {
+              return (
+                <GridItem
+                  key={i}
+                  src={item.media.m}
+                  alt={item.title}
+                  onClick={e => this.selectItem(item.link)}
+                  isSelected={this.isSelected(item.link)}
+                />
+              );
             })}
-        </main>
+        </GridContainer>
       </React.Fragment>
     );
   }
