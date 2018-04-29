@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UI - Header: 1`] = `
+.c0 {
+  background: #f90;
+  padding: 10px;
+  height: 58px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12),0 1px 2px rgba(0,0,0,0.24);
+}
+
+<header
+  className="c0"
+/>
+`;
+
+exports[`UI - HeaderTitle: 1`] = `
+.c0 {
+  color: #fff;
+}
+
+<h1
+  className="c0"
+/>
+`;

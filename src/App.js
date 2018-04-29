@@ -5,7 +5,7 @@ import { GridContainer, GridItem } from "./ui/Grid";
 import fetchJsonp from "fetch-jsonp";
 import { Header, HeaderTitle } from "./ui/Header";
 import { ErrorMsg } from "./ui/Error";
-import formatId from "./helpers/formatid.js";
+import formatId from "./utils/formatid.js";
 import { LoaderWrapper } from "./ui/LoaderWrapper";
 
 class App extends Component {

@@ -1,9 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import React from "react";
+import { shallow, mount, render } from "enzyme";
+import "mock-local-storage";
+import App from "./App";
+import { Header } from "./ui/Header";
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
+describe("App", () => {
+  let wrapper;
+  beforeEach(() => {
+    wrapper = shallow(<App />);
+  });
+
+  it("renders correctly", () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+  it("should render a <header />", () => {
+    expect(wrapper.find("header").length).toEqual(1);
+  });
+
+  it("should render the Header Component", () => {
+    expect(wrapper.containsMatchingElement(<Header />)).toEqual(true);
+  });
 });
