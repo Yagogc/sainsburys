@@ -31,8 +31,6 @@ class App extends Component {
         return response.json();
       })
       .then(function(json) {
-        console.log(json);
-        console.log(json.items);
         self.setState({
           items: json.items,
           loading: false
